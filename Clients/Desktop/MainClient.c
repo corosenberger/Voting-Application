@@ -1,35 +1,26 @@
-#include <gtk/gtk.h>
-#include <pthread.h>
-#include "Garbage.h"
-#include "List.h"
-#include "String.h"
-#include "Build.h"
-#include "Crypto.h"
-#include "Client.h"
+#include "MainClient.h"
 
 pthread_t voteThread;
-
-#define PUBLIC_KEY_FILENAME "cliPublicKey.pem"
-#define PRIVATE_KEY_FILENAME "cliPrivateKey.pem"
+String* reply;
 
 void reportServerResponse(int num) {
-    String* reply; pthread_join(voteThread, &reply);
-    printf("Done!\n");
-}
+    pthread_join(voteThread, NULL);
+} 
 
-String* threadSubmitVote(List* groups) {
-    signal(SIGUSR1,reportServerResponse);
+void* threadSubmitVote(List* groups) {
+    signal(SIGUSED,reportServerResponse);
 
     String* vote = buildVote(groups);
     String* crypt = encryptFromFile(vote,PUBLIC_KEY_FILENAME);
-    String* reply = serverConnect(crypt);
+    reply = serverConnect(crypt);
 
-    raise(SIGUSR1);
-    return reply;
+    raise(SIGUSED);
+    return NULL;
 }
 
 static void submitVote(GtkWidget* widget, List* groups) {
-    pthread_create(&voteThread,NULL,threadSubmitVote,groups);
+    gtk_widget_set_sensitive(widget, FALSE);
+    pthread_create(&voteThread, NULL, threadSubmitVote, groups);
 }
 
 static void guiQuit() {

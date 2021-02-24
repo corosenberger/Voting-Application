@@ -90,8 +90,4 @@ String* serverConnect(String* text) {
     return reply;
 }
 
-#else
-
-String* serverConnect(String* text) { return NULL;}
-
 #endif
