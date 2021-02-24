@@ -16,7 +16,7 @@ String* createStringArr(char* s) {
 
 String* createStringArrLen(char* s, int len) {
     String* str = createString();
-    for(int i = 0; i < len; i++) stringappend(str,s[i]);
+    stringextendlen(str,s,len);
     return str;
 }
 
@@ -59,6 +59,10 @@ void stringappend(String* str, char c) {
 
 void stringextend(String* str, char* s) {
     for(int i = 0; i < strlen(s); i++) stringappend(str,s[i]);
+}
+
+void stringextendlen(String* str, char* s, int len) {
+    for(int i = 0; i < len; i++) stringappend(str,s[i]);
 }
 
 int stringfind(String* str, char c) {

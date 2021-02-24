@@ -28,6 +28,7 @@ char stringget(String* str, int idx);
 int stringset(String* str, int idx, char c);
 void stringappend(String* str, char c);
 void stringextend(String* str, char* s);
+void stringextendlen(String* str, char* s, int len);
 int stringfind(String* str, char c);
 int stringrfind(String* str, char c);
 String* stringsub(String* str, int sidx, int eidx);
