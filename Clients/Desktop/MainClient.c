@@ -4,6 +4,7 @@
 #include "String.h"
 #include "Build.h"
 #include "Crypto.h"
+#include "Client.h"
 
 #define PUBLIC_KEY_FILENAME "cliPublicKey.pem"
 #define PRIVATE_KEY_FILENAME "cliPrivateKey.pem"
@@ -11,7 +12,7 @@
 static void submitVote(GtkWidget* widget, List* groups) {
     String* vote = buildVote(groups);
     String* crypt = encryptFromFile(vote,PUBLIC_KEY_FILENAME);
-    printf("%s\n", decryptFromFile(crypt,PRIVATE_KEY_FILENAME)->chars);
+    String* serverResponse = serverConnect(crypt);
 }
 
 static void guiQuit() {

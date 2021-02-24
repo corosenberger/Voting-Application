@@ -25,7 +25,7 @@ String* createStringFile(char* filename) {
 
     int fd = open(filename, O_RDONLY);
     char c; int bytesRead;
-    while((bytesRead = read(fd,&c,sizeof(char))) == sizeof(char)) {
+    while(bytesRead = read(fd,&c,sizeof(char))) {
         stringappend(str,c);
     }
     close(fd);
