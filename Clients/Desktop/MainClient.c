@@ -28,7 +28,7 @@ int main(int argc, char* argv[]) {
     gtk_init(&argc, &argv);
 
     builder = gtk_builder_new();
-    gtk_builder_add_from_file(builder, "builder.ui", &error);
+    gtk_builder_add_from_file(builder, "voting.ui", &error);
     if(!builder) {freegAll(); return -1;}
 
     List* groups = createList();
