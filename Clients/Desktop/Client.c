@@ -2,8 +2,9 @@
 
 Server* getServer() {
     Server* server = callocg(sizeof(Server));
-    server->host = HOST;
-    server->port = PORT;
+    String** configs = stringsplit(createStringFile("cli.configure"),'\n');
+    server->host = configs[0]->chars;
+    server->port = atoi(configs[1]->chars);
     return server;
 }
 

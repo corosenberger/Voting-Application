@@ -31,9 +31,6 @@ typedef struct Server {
 
 String* serverConnect(String* text);
 
-#define HOST "127.0.0.1"
-#define PORT 65433
-
 #ifdef __cplusplus
 }
 #endif
