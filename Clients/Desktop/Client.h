@@ -13,7 +13,6 @@
 #include <winsock2.h>
 #include <Ws2tcpip.h>
 #pragma comment(lib, "Ws2_32.lib")
-#define BUFF_SIZE 4096
 #elif defined(__unix__)
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -30,6 +29,8 @@ typedef struct Server {
 } Server;
 
 String* serverConnect(String* text);
+
+#define BUFF_SIZE 4096
 
 #ifdef __cplusplus
 }
