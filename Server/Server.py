@@ -12,19 +12,23 @@ class Server:
     def __init__(self,profile):
         #atexit.register(Server.cleanUp,self)
         self.tally = Tally(profile)
+        self.serverSock = None
         self.stages = {}
 
     def run(self):
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as serverSock:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as self.serverSock:
             with open("server.configure") as fd: host, port = socket.INADDR_ANY, int(fd.read())
-            serverSock.settimeout(10)
-            serverSock.bind(('127.0.0.1',port))
-            serverSock.listen(10)
-            while True:
-                clientSock, clientAddress = serverSock.accept()
-                clientSock.settimeout(1)
-                clientThread = threading.Thread(target=self.handleConnection,args=(clientSock, clientAddress))
-                clientThread.start()
+            self.serverSock.bind(('127.0.0.1',port))
+            self.serverSock.listen(10)
+            i = 0
+            try:
+                while True:
+                    clientSock, clientAddress = self.serverSock.accept()
+                    clientSock.settimeout(1)
+                    clientThread = threading.Thread(target=self.handleConnection,args=(clientSock, clientAddress))
+                    clientThread.start()
+            except: pass
+        self.serverSock = None
 
     def handleConnection(self, clientSock, clientAddress):
         try:
@@ -44,6 +48,9 @@ class Server:
             clientSock.send(bytes(response,'utf-8'))
         finally: clientSock.close()
 
+    def suspend(self):
+        if self.serverSock: self.serverSock.close()
+
     def castVote(self,data):
         with open('cliPrivateKey.pem') as kfd: key = RSA.importKey(kfd.read())
         plain = PKCS1_OAEP.new(key).decrypt(data)
@@ -51,8 +58,12 @@ class Server:
         self.tally.update(voter)
         return 'Success'
 
+    def save(self):
+        self.tally.save()
+
     def cleanUp(self):
         self.tally.save()
 
-if __name__ == '__main__':
-    Server('test.profile').run()
+def main(server): server.run()
+
+if __name__ == '__main__': main(Server('test.profile'))
