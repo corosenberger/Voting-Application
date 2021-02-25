@@ -19,7 +19,7 @@ output=main.o
 remake: clean all
 
 all: $(localLibs)
-	$(CC) -w $(gtkFlags) MainClient.c $(localLibs) $(cryptoFlags) $(gtkLibs) -o $(output) $(sockFlags)
+	$(CC) -w $(gtkFlags) Main.c $(localLibs) $(cryptoFlags) $(gtkLibs) -o $(output) $(sockFlags)
 
 GarbageBin.o:
 	$(CC) -c -w GarbageBin.c -o GarbageBin.o
