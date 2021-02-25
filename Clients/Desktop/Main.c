@@ -5,6 +5,8 @@ String* reply;
 
 void reportServerResponse(int num) {
     pthread_join(voteThread, NULL);
+    if(reply) printf("%s\n",reply->chars);
+    else printf("rip\n");
 } 
 
 void* threadSubmitVote(List* groups) {
@@ -43,15 +45,15 @@ int main(int argc, char* argv[]) {
 
     List* groups = createList();
 
-    listappend(groups, 'p', "Presidential: ");
+    listappend(groups, 'p', "Presidential:");
     button = gtk_builder_get_object(builder,"presidentialGroup");
     listappend(groups, 'p', gtk_radio_button_get_group(button));
 
-    listappend(groups, 'p', "Gubernatoria: ");
+    listappend(groups, 'p', "Gubernatoria:");
     button = gtk_builder_get_object(builder,"gubernatorialGroup");
     listappend(groups, 'p', gtk_radio_button_get_group(button));
 
-    listappend(groups, 'p', "Mayoral: ");
+    listappend(groups, 'p', "Mayoral:");
     button = gtk_builder_get_object(builder,"mayoralGroup");
     listappend(groups, 'p', gtk_radio_button_get_group(button));
 

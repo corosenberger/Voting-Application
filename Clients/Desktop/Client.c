@@ -11,7 +11,6 @@ Server* getServer() {
 #if defined(_WIN32)
 
 String* serverConnect(String* text) {
-    WSADATA wsa; if (!WSAStartup(MAKEWORD(2,2),&wsa)) return NULL;
     SOCKET sock; if((sock = socket(AF_INET, SOCK_STREAM, 0)) == INVALID_SOCKET) return NULL;
 
     Server* server = getServer();
@@ -23,7 +22,11 @@ String* serverConnect(String* text) {
 
     if(connect(sock, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0) return NULL;
 
+    printf("Connection Made\n");
+
     if(send(sock, text->chars, text->size, 0) < 0) return NULL;
+
+    printf("File sent\n");
 
     String* reply = createString(); char* buff = callocg(BUFF_SIZE*sizeof(char)); int res;
     res = recv(sock, buff, BUFF_SIZE, 0);
@@ -32,10 +35,11 @@ String* serverConnect(String* text) {
         stringextendlen(reply,buff,res);
     } while((res = recv(sock, buff, BUFF_SIZE, 0)) > 0);
 
+    printf("Reply Received\n");
+
     freeg(buff);
     freeg(server);
     closesocket(sock);
-    WSACleanup();
     return reply;
 }
 
