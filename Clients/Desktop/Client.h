@@ -1,7 +1,6 @@
 #ifndef _CLIENT_CLIENT_H
 #define _CLIENT_CLIENT_H
 
-
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <signal.h>

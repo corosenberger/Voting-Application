@@ -16,7 +16,18 @@
 #define SIGUSED SIGUSR1
 #endif
 
+typedef void* (*ThreadFunc) (void*);
+
+typedef struct ThreadInput {
+    void* input;
+    ThreadFunc toRun;
+    ThreadFunc successFunc;
+    ThreadFunc failureFunc
+} ThreadInput;
+
 #define PUBLIC_KEY_FILENAME "cliPublicKey.pem"
 #define PRIVATE_KEY_FILENAME "cliPrivateKey.pem"
+#define SUCCESS_RESPONSE "Success"
+#define FAILURE_RESPONSE "Failure"
 
 #endif

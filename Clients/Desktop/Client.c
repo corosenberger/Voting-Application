@@ -24,7 +24,7 @@ String* serverConnect(String* text) {
 
     if(connect(sock, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0) return NULL;
 
-    printf("Connection Made\n");
+    printf("Connection made\n");
 
     if(send(sock, text->chars, text->size, 0) < 0) return NULL;
 
@@ -37,7 +37,7 @@ String* serverConnect(String* text) {
         stringextendlen(reply,buff,res);
     } while((res = recv(sock, buff, BUFF_SIZE, 0)) > 0);
 
-    printf("Reply Received\n");
+    printf("Reply received\n");
 
     freeg(buff);
     freeg(server);

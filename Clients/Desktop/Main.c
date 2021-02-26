@@ -1,28 +1,39 @@
 #include "Main.h"
 
 pthread_t voteThread;
-String* reply;
 
-void reportServerResponse(int num) {
-    pthread_join(voteThread, NULL);
+void* testFunc(String* reply) {
     if(reply) printf("%s\n",reply->chars);
     else printf("rip\n");
-} 
+    return NULL;
+}
 
-void* threadSubmitVote(List* groups) {
-    signal(SIGUSED,reportServerResponse);
-
+String* threadSubmitVote(List* groups) {
     String* vote = buildVote(groups);
     String* crypt = encryptFromFile(vote,PUBLIC_KEY_FILENAME);
-    reply = serverConnect(crypt);
+    return serverConnect(crypt);
+}
 
-    raise(SIGUSED);
+void* threadNextPhase(ThreadInput* tinput) {
+    pthread_t runThread; pthread_create(&runThread, NULL, tinput->toRun, tinput->input);
+    String* reply; pthread_join(runThread,&reply);
+
+    if(!reply || !strcmp(reply->chars,FAILURE_RESPONSE)) tinput->failureFunc(reply);
+    else if(!strcmp(reply->chars,SUCCESS_RESPONSE)) tinput->successFunc(reply);
+
     return NULL;
 }
 
 static void submitVote(GtkWidget* widget, List* groups) {
     gtk_widget_set_sensitive(widget, FALSE);
-    pthread_create(&voteThread, NULL, threadSubmitVote, groups);
+
+    ThreadInput* tinput = callocg(sizeof(ThreadInput));
+    tinput->input = groups;
+    tinput->toRun = threadSubmitVote;
+    tinput->successFunc = testFunc;
+    tinput->failureFunc = testFunc;
+
+    pthread_create(&voteThread, NULL, threadNextPhase, tinput);
 }
 
 static void guiQuit() {
