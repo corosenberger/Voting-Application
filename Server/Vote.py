@@ -1,9 +1,9 @@
 class Voter:
-    def __init__(self, voteList):
-        self.voterid = int(voteList[0])
-        self.location = (int(voteList[1]),  int(voteList[2])) #latitude, longitude
-        self.time = voteList[3]
-        self.candidates = dict((vote[:vote.find(':')], vote[vote.find(':')+1:]) for vote in voteList[4:])
+    def __init__(self, voterid, ip, time, candidates):
+        self.voterid = voterid
+        self.ip = ip
+        self.time = time
+        self.candidates = dict((vote[:vote.find(':')], vote[vote.find(':')+1:]) for vote in candidates)
 
     def __len__(self): return len(self.candidates)
     def __eq__(self, other): return self.voterid == other.voterid 
