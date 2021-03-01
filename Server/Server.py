@@ -12,6 +12,8 @@ from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_OAEP
 
 BUFFER_SIZE = 4096
+PUBLIC_KEY_FILENAME = 'key_send.pem'
+PRIVATE_KEY_FILENAME = 'key_recv.pem'
 
 class Server:
     def __init__(self,profile):
@@ -48,7 +50,7 @@ class Server:
             try: 
                 while len(part:=clientSock.recv(BUFFER_SIZE)) >= 1: data.append(part)
             except: data = b''.join(data)
-            with open('cliPrivateKey.pem') as kfd: key = RSA.importKey(kfd.read())
+            with open(PRIVATE_KEY_FILENAME) as kfd: key = RSA.importKey(kfd.read())
             plainList = PKCS1_OAEP.new(key).decrypt(data).decode("utf-8").split('\n')
 
             print(plainList)
@@ -71,7 +73,7 @@ class Server:
 
             print(response)
             
-            with open('cliPublicKey.pem') as kfd: key = RSA.importKey(kfd.read())
+            with open(PUBLIC_KEY_FILENAME) as kfd: key = RSA.importKey(kfd.read())
             crypt = PKCS1_OAEP.new(key).encrypt(bytes(response,'utf-8'))
             clientSock.send(crypt)
         finally: clientSock.close()
