@@ -10,23 +10,22 @@ import java.util.ArrayList;
 
 public class Client {
 
-    private static final String CONFIG_FILE = "assets/cli.configure";
     private static final String TAG = "Client";
 
-    private static Socket getServer() throws IOException {
-        AssetManager am = MainActivity.context.getAssets();
-        InputStream is = am.open(CONFIG_FILE);
+    private static String host;
+    private static int port;
+
+    public static void initServer(InputStream is) throws IOException {
         Scanner scanner = new Scanner(is);
-        String host = scanner.nextLine();
-        int port = Integer.parseInt(scanner.nextLine());
-        return new Socket(host, port);
+        host = scanner.nextLine();
+        port = Integer.parseInt(scanner.nextLine());
     }
 
     public static byte[] serverConnect(byte[] text) {
         ArrayList<Byte> responseList = new ArrayList<Byte>();
 
         try {
-            Socket socket = getServer();
+            Socket socket = new Socket(host, port);
 
             InputStream in = socket.getInputStream();
             OutputStream out = socket.getOutputStream();
@@ -41,7 +40,7 @@ public class Client {
 
             in.close(); out.close(); socket.close();
         } catch (Exception e) {
-            Log.e(TAG, "Unable to connect to server.");
+            e.printStackTrace();
         }
 
         byte[] response = new byte[responseList.size()];

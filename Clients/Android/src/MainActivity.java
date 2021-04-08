@@ -3,6 +3,7 @@ package com.example.votingapp;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -10,13 +11,22 @@ import android.widget.Button;
 
 import android.os.Bundle;
 
-public class MainActivity extends AppCompatActivity {
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
 
-    private static final String PUBLIC_KEY_FILENAME = "assets/key_send.pem";
-    private static final String PRIVATE_KEY_FILENAME = "assets/key_recv.pem";
+public class MainActivity extends AppCompatActivity  {
+
+    private static final String PUBLIC_KEY_FILENAME = "key_send.pem";
+    private static final String PRIVATE_KEY_FILENAME = "key_recv.pem";
+    private static final String CONFIG_FILE = "cli.configure";
     private static final String TAG = "Login Page";
 
-    public static Context context;
+    private PublicKey publicKey;
+    private PrivateKey privateKey;
 
     private EditText voteridET;
     private EditText emailET;
@@ -27,7 +37,24 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        context = getApplicationContext();
+        try {
+            AssetManager assets = getAssets();
+
+            InputStream publicKeyStream = assets.open(PUBLIC_KEY_FILENAME);
+            publicKey = Crypto.loadPublicKey(publicKeyStream);
+
+            InputStream privateKeyStream = assets.open(PRIVATE_KEY_FILENAME);
+            privateKey = Crypto.loadPrivateKey(privateKeyStream);
+
+            InputStream configStream = assets.open(CONFIG_FILE);
+            Client.initServer(configStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (InvalidKeySpecException e) {
+            e.printStackTrace();
+        }
 
         voteridET = findViewById(R.id.editTextVoterID);
         emailET = findViewById(R.id.editTextEmail);
@@ -35,9 +62,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private String sendToServer(String plain) {
-        byte[] crypt = Crypto.encryptText(plain, PUBLIC_KEY_FILENAME);
+        byte[] crypt = Crypto.encryptText(plain, publicKey);
         byte[] response = Client.serverConnect(crypt);
-        return Crypto.decryptText(response, PRIVATE_KEY_FILENAME);
+        return Crypto.decryptText(response, privateKey);
     }
 
     public void signup(View view) {

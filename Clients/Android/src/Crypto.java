@@ -1,6 +1,7 @@
 package com.example.votingapp;
 
 import android.content.res.AssetManager;
+import android.util.Base64;
 import android.util.Log;
 
 import java.io.*;
@@ -14,56 +15,59 @@ public class Crypto {
     private static final String RSA = "RSA";
     private static final String TAG = "Crypto";
 
-    private static byte[] loadKeyBytes(String file) throws IOException {
-        AssetManager am = MainActivity.context.getAssets();
-        InputStream is = am.open(file);
-        byte[] data = new byte[is.available()]; is.read(data);
-        is.close();
-        return data;
+    private static byte[] loadKeyBytes(InputStream is) throws IOException {
+        byte[] dataBytes = new byte[is.available()]; is.read(dataBytes); is.close();
+        String dataString = new String(dataBytes);
+
+        int firstNewLine = dataString.indexOf('\n') + 1;
+        int lastNewLine = dataString.lastIndexOf('\n');
+        dataString = dataString.substring(firstNewLine, lastNewLine)
+                .replace("\n","");
+
+        dataBytes = Base64.decode(dataString, Base64.DEFAULT);
+        return dataBytes;
     }
 
-    private static PrivateKey loadPrivateKey(String file) throws Exception {
-        byte[] keyBytes = loadKeyBytes(file);
+    public static PrivateKey loadPrivateKey(InputStream is) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+        byte[] keyBytes = loadKeyBytes(is);
 
-        PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);
-        KeyFactory kf = KeyFactory.getInstance("RSA");
+        EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);
+        KeyFactory kf = KeyFactory.getInstance(RSA);
         return kf.generatePrivate(spec);
     }
 
-    private static PublicKey loadPublicKey(String file) throws Exception {
-        byte[] keyBytes = loadKeyBytes(file);
+    public static PublicKey loadPublicKey(InputStream is) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+        byte[] keyBytes = loadKeyBytes(is);
 
-        X509EncodedKeySpec spec = new X509EncodedKeySpec(keyBytes);
-        KeyFactory kf = KeyFactory.getInstance("RSA");
+        EncodedKeySpec spec = new X509EncodedKeySpec(keyBytes);
+        KeyFactory kf = KeyFactory.getInstance(RSA);
         return kf.generatePublic(spec);
     }
 
-    public static byte[] encryptText(String plain, String file) {
+    public static byte[] encryptText(String plain, PublicKey publicKey) {
         byte[] crypt = null;
 
         try {
-            PublicKey publicKey = loadPublicKey(file);
             Cipher cipher = Cipher.getInstance(RSA);
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
             crypt = cipher.doFinal(plain.getBytes());
         } catch (Exception e) {
-            Log.e(TAG,"Failed to encrypt.");
+            e.printStackTrace();
         }
 
         return crypt;
     }
 
-    public static String decryptText(byte[] crypt, String file) {
+    public static String decryptText(byte[] crypt, PrivateKey privateKey) {
         String plain = null;
 
         try {
-            PrivateKey privateKey = loadPrivateKey(file);
             Cipher cipher = Cipher.getInstance(RSA);
             cipher.init(Cipher.DECRYPT_MODE, privateKey);
             byte[] result = cipher.doFinal(crypt);
             plain = new String(result);
         } catch (Exception e) {
-            Log.e(TAG,"Failed to decrypt.");
+            e.printStackTrace();
         }
 
         return plain;
