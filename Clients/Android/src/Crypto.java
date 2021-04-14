@@ -1,19 +1,18 @@
 package com.example.votingapp;
 
-import android.content.res.AssetManager;
 import android.util.Base64;
-import android.util.Log;
 
 import java.io.*;
 import java.security.*;
 import java.security.spec.*;
 
 import javax.crypto.Cipher;
+import javax.crypto.spec.OAEPParameterSpec;
+import javax.crypto.spec.PSource;
 
 public class Crypto {
 
-    private static final String RSA = "RSA";
-    private static final String TAG = "Crypto";
+    private static final String RSA = "RSA/NONE/NoPadding";
 
     private static byte[] loadKeyBytes(InputStream is) throws IOException {
         byte[] dataBytes = new byte[is.available()]; is.read(dataBytes); is.close();
@@ -32,7 +31,7 @@ public class Crypto {
         byte[] keyBytes = loadKeyBytes(is);
 
         EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);
-        KeyFactory kf = KeyFactory.getInstance(RSA);
+        KeyFactory kf = KeyFactory.getInstance("RSA");
         return kf.generatePrivate(spec);
     }
 
@@ -40,7 +39,7 @@ public class Crypto {
         byte[] keyBytes = loadKeyBytes(is);
 
         EncodedKeySpec spec = new X509EncodedKeySpec(keyBytes);
-        KeyFactory kf = KeyFactory.getInstance(RSA);
+        KeyFactory kf = KeyFactory.getInstance("RSA");
         return kf.generatePublic(spec);
     }
 
@@ -55,7 +54,7 @@ public class Crypto {
             e.printStackTrace();
         }
 
-        return crypt;
+        return plain.getBytes();
     }
 
     public static String decryptText(byte[] crypt, PrivateKey privateKey) {
@@ -70,6 +69,6 @@ public class Crypto {
             e.printStackTrace();
         }
 
-        return plain;
+        return new String(crypt);
     }
 }

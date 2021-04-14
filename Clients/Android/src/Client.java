@@ -1,6 +1,5 @@
 package com.example.votingapp;
 
-import android.content.res.AssetManager;
 import android.util.Log;
 
 import java.io.*;
@@ -15,7 +14,7 @@ public class Client {
     private static String host;
     private static int port;
 
-    public static void initServer(InputStream is) throws IOException {
+    public static void initServer(InputStream is) {
         Scanner scanner = new Scanner(is);
         host = scanner.nextLine();
         port = Integer.parseInt(scanner.nextLine());
@@ -42,6 +41,8 @@ public class Client {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        Log.e(TAG,responseList.toString() + " <- recv");
 
         byte[] response = new byte[responseList.size()];
         for(int i = 0; i < responseList.size(); i++) response[i] = responseList.get(i);
