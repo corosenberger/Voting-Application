@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <RadioGroup
+        android:id="@+id/RadioGroup1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48dp"
+        android:layout_marginLeft="48dp"
+        android:layout_marginTop="107dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RadioButton
+            android:id="@+id/radioButtonBlueParty1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Param Patel (Blue Party)" />
+
+        <RadioButton
+            android:id="@+id/radioButtonRedParty1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nick Meegan (Red Party)" />
+
+        <RadioButton
+            android:id="@+id/radioButtonYellowParty1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bobert Brocoli (Yellow Party)" />
+    </RadioGroup>
+
+    <RadioGroup
+        android:id="@+id/RadioGroup3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48dp"
+        android:layout_marginLeft="48dp"
+        android:layout_marginTop="476dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RadioButton
+            android:id="@+id/radioButtonBlueParty3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Neha Nelson (Blue Party)" />
+
+        <RadioButton
+            android:id="@+id/radioButtonRedParty3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Chris Rosenberger (Red Party)" />
+
+        <RadioButton
+            android:id="@+id/radioButtonYellowParty3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Swetha Angara (Yellow Party)" />
+
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48dp"
+        android:layout_marginLeft="48dp"
+        android:layout_marginTop="457dp"
+        android:text="Mayoral"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48dp"
+        android:layout_marginLeft="48dp"
+        android:layout_marginTop="272dp"
+        android:text="Gubernatorial"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48dp"
+        android:layout_marginLeft="48dp"
+        android:layout_marginTop="48dp"
+        android:text="Please select the candidates you wish to vote for:"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48dp"
+        android:layout_marginLeft="48dp"
+        android:layout_marginTop="88dp"
+        android:text="Presidential"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/buttonVote"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="52dp"
+        android:layout_marginLeft="52dp"
+        android:layout_marginTop="657dp"
+        android:onClick="vote"
+        android:text="VOTE!"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/buttonReset"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="188dp"
+        android:layout_marginLeft="188dp"
+        android:layout_marginTop="656dp"
+        android:onClick="reset"
+        android:text="Reset Selection"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <RadioGroup
+        android:id="@+id/RadioGroup2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48dp"
+        android:layout_marginLeft="48dp"
+        android:layout_marginTop="291dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RadioButton
+            android:id="@+id/radioButtonBlueParty2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Aniqa Rahim (Blue Party)" />
+
+        <RadioButton
+            android:id="@+id/radioButtonRedParty2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Suraj Sanyal (Red Party)" />
+
+        <RadioButton
+            android:id="@+id/radioButtonYellowParty2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hrishit Joshi (Yellow Party)" />
+    </RadioGroup>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
