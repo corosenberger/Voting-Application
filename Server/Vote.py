@@ -16,6 +16,6 @@ class Voter:
     def __hash__(self): return hash(self.voterid)
     
     def __str__(self):
-        attString = 'VoterId: ' + str(self.voterid)  + ', Location: ' + str(self.location) + ', Time: ' + self.time + '\n'
+        attString = 'VoterId: ' + str(self.voterid)  + ', Location: ' + str(self.ip) + ', Time: ' + str(self.time) + '\n'
         canString = ''.join(e + ': ' + c + ', ' for e,c in self.candidates.items())[:-2]
         return attString + canString

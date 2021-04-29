@@ -1,19 +1,22 @@
 from Tally import Tally
 from Vote import Voter
 from Accounts import Accounts
+import Perceptron
 import os
 import re
 import atexit
 import socket
 import threading
 import pickle
-from datetime import datetime
+from datetime import date, datetime
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_OAEP
 
 BUFFER_SIZE = 4096
 PUBLIC_KEY_FILENAME = 'key_send.pem'
 PRIVATE_KEY_FILENAME = 'key_recv.pem'
+NET_SAVE_FILE = 'Voter Net.sav'
+NET_ACCEPT_INDEX, NET_REJECT_INDEX = 0, 1
 
 class Server:
     def __init__(self,profile):
@@ -27,11 +30,12 @@ class Server:
         self.serverSock = None
         self.logins = dict()
         self.insignup = dict()
+        self.net = Perceptron.initFromFile(NET_SAVE_FILE)
 
     def run(self):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as self.serverSock:
             with open("server.configure") as fd: host, port = socket.INADDR_ANY, int(fd.read())
-            self.serverSock.bind(('127.0.0.1',port))
+            self.serverSock.bind(('',port))
             self.serverSock.listen(10)
             i = 0
             try:
@@ -51,7 +55,13 @@ class Server:
                 while len(part:=clientSock.recv(BUFFER_SIZE)) >= 1: data.append(part)
             except: data = b''.join(data)
             with open(PRIVATE_KEY_FILENAME) as kfd: key = RSA.importKey(kfd.read())
-            plainList = PKCS1_OAEP.new(key).decrypt(data).decode("utf-8").split('\n')
+
+            try:
+                padding = True
+                plainList = PKCS1_OAEP.new(key).decrypt(data).decode("utf-8").split('\n')
+            except:
+                padding = False
+                plainList = data.decode("utf-8").split('\n')
 
             print(plainList)
             print(clientAddress)
@@ -74,7 +84,12 @@ class Server:
             print(response)
             
             with open(PUBLIC_KEY_FILENAME) as kfd: key = RSA.importKey(kfd.read())
-            crypt = PKCS1_OAEP.new(key).encrypt(bytes(response,'utf-8'))
+
+            if padding:
+                crypt = PKCS1_OAEP.new(key).encrypt(bytes(response,'utf-8'))
+            else:
+                crypt = bytes(response,'utf-8')
+
             clientSock.send(crypt)
         finally: clientSock.close()
 
@@ -82,6 +97,15 @@ class Server:
         if self.serverSock: self.serverSock.close()
 
     def castVote(self, voterid, ip, candidates):
+        netOut = self.net.computeOutput([voterid,ip,datetime.now()])
+        if netOut[NET_ACCEPT_INDEX] < netOut[NET_REJECT_INDEX]:
+            #currently net is untrained - no data on computerized voting rip
+            #so just setting this as a 'pass' statement
+            #in the future this would be wired to return failure
+            #i.e. comment out this next line:
+            #return 'Failure'
+            pass
+        
         voter = Voter(voterid,ip,datetime.now(),candidates)
         self.tally.update(voter)
         return 'Success'
@@ -95,7 +119,7 @@ class Server:
         if voterid not in self.voterids or voterid in self.tally.rawVotes: 
             del self.insignup[voteraddr]
             return 'Failure'
-        emailcheck = re.match(r"[^@]+@[^@]+\.[^@]+", email)
+        emailcheck = re.match(r"[^@]+@[^@]+\.[^@]+", email) and email not in self.accounts
         passcheck =  re.match(r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!#%*?&]{6,20}$",password)
         print(emailcheck)
         print(passcheck)
@@ -123,5 +147,6 @@ def main(server): server.run()
 
 if __name__ == '__main__': 
     server = Server('test.profile')
+    for v in server.tally.rawVotes.items(): print(v[1])
     print(server.accounts)
     print(server.tally)
