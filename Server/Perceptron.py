@@ -81,5 +81,5 @@ class Perceptron:
         save.close()
 
 if __name__ == '__main__':
-    net = Perceptron([3,4,2])
+    net = Perceptron([5,4,2])
     net.writeSave('Voter Net.sav')

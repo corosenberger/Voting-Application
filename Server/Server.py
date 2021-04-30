@@ -97,14 +97,18 @@ class Server:
         if self.serverSock: self.serverSock.close()
 
     def castVote(self, voterid, ip, candidates):
-        netOut = self.net.computeOutput([voterid,ip,datetime.now()])
-        if netOut[NET_ACCEPT_INDEX] < netOut[NET_REJECT_INDEX]:
-            #currently net is untrained - no data on computerized voting rip
-            #so just setting this as a 'pass' statement
-            #in the future this would be wired to return failure
-            #i.e. comment out this next line:
-            #return 'Failure'
-            pass
+        try:
+            l1,l2,l3 = [int(s) for s in ip.split('.')]
+            tm = int(datetime.datetime.utcnow().timestamp())
+            netOut = self.net.computeOutput([voterid,l1,l2,l3,tm])
+            if netOut[NET_ACCEPT_INDEX] < netOut[NET_REJECT_INDEX]:
+                #currently net is untrained - no data on computerized voting rip
+                #so just setting this as a 'pass' statement
+                #in the future this would be wired to return failure
+                #i.e. comment out this next line:
+                #return 'Failure'
+                pass
+        except: pass
         
         voter = Voter(voterid,ip,datetime.now(),candidates)
         self.tally.update(voter)
