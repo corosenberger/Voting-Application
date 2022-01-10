@@ -1,3 +1,4 @@
+##
 from Crypto.PublicKey import RSA
 
 keyType = 'PEM'
@@ -27,4 +28,5 @@ def main(keyType=keyType, size=size, e=e):
     with open('cliPublicKey.pem', 'wb+') as fd: fd.write(cliPublicKey)
 
 if __name__ == '__main__': main()
+    
     
